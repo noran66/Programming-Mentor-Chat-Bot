@@ -1,4 +1,5 @@
 fastapi
 uvicorn
-anthropic
 pydantic
+httpx
+reportlab

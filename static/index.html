@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CodeBuddy – your problem-solving coach</title>
+<style>
+:root{--bg:#f7f8fb;--card:#fff;--fg:#1b2033;--mut:#5b6275;--ac:#4f46e5;--acs:#eef0ff;--bd:#e3e6ee;--ok:#0f7a3d;--okb:#dff5e7;--warn:#8a5a00;--warnb:#fff0cc;--ns:#444b5c;--nsb:#e7e9ef;--bad:#b3261e;--hl:rgba(255,235,59,.55);--fs:16px}
+[data-theme=dark]{--bg:#12141b;--card:#1b1f2a;--fg:#eef0f6;--mut:#aab0c2;--ac:#9aa2ff;--acs:#262b44;--bd:#2f3547;--ok:#7be0a1;--okb:#173a27;--warn:#ffd780;--warnb:#44350f;--ns:#d0d4e0;--nsb:#2c3140;--bad:#ff9d96;--hl:rgba(255,235,59,.3)}
+[data-contrast=high]{--bg:#000;--card:#000;--fg:#fff;--mut:#fff;--ac:#ffe600;--acs:#000;--bd:#fff;--ok:#fff;--okb:#000;--warn:#fff;--warnb:#000;--ns:#fff;--nsb:#000;--bad:#fff;--hl:rgba(255,230,0,.5)}
+*{box-sizing:border-box}html{font-size:var(--fs)}
+body{margin:0;font-family:Inter,system-ui,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--fg);line-height:1.5}
+button,select,input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+header{display:flex;align-items:center;gap:1rem;padding:.7rem 1.5rem;background:var(--card);border-bottom:1px solid var(--bd);flex-wrap:wrap;position:sticky;top:0;z-index:5}
+.logo{display:flex;align-items:center;gap:.6rem;font-weight:700;font-size:1.2rem;background:none;border:0;cursor:pointer}
+.logo i{background:var(--ac);color:var(--bg);border-radius:10px;padding:.2rem .5rem;font-style:normal;font-size:.9rem}
+nav{margin-left:auto;display:flex;gap:1rem;align-items:center;flex-wrap:wrap}
+nav button.link{background:none;border:0;cursor:pointer;color:var(--mut);padding:.3rem}
+nav button.link:hover,nav button.link[aria-current=page]{color:var(--ac);text-decoration:underline}
+.sw{display:flex;align-items:center;gap:.4rem;font-size:.9rem;font-weight:600}
+.sw input{width:2.4rem;height:1.3rem;accent-color:var(--ac)}
+main{max-width:1400px;margin:0 auto;padding:1.2rem 1.5rem 5rem}
+.btn{background:var(--ac);color:var(--bg);border:2px solid var(--ac);border-radius:10px;padding:.6rem 1.1rem;font-weight:600;cursor:pointer}
+.btn.sec{background:var(--card);color:var(--fg);border-color:var(--bd)}
+.btn.sm{padding:.3rem .7rem;font-size:.9rem;border-radius:8px}
+.chip{border:1.5px solid var(--bd);background:var(--card);border-radius:8px;padding:.3rem .65rem;font-size:.85rem;cursor:pointer;margin:.15rem .1rem}
+.chip[aria-pressed=true]{border-color:var(--ac);background:var(--acs);font-weight:600}
+.view[hidden]{display:none}
+.hero{text-align:center;padding:2.5rem 0 1rem}
+.eyebrow{color:var(--ac);font-weight:700;letter-spacing:.12em;font-size:.8rem}
+.hero h1{font-size:clamp(2rem,5vw,3.4rem);margin:.5rem 0;font-weight:500;line-height:1.15}.hero h1 span{color:var(--ac)}
+.hero p.lead{color:var(--mut);font-size:1.15rem}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.2rem;max-width:960px;margin:1.5rem auto}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:1.2rem}
+.card h2,.card h3{margin:.1rem 0 .4rem;font-size:1.05rem}.card ul{margin:0;padding-left:1.1rem;color:var(--mut)}
+.work{display:grid;grid-template-columns:minmax(260px,1fr) minmax(320px,1.5fr);gap:1.2rem;align-items:start}
+@media(max-width:850px){.work{grid-template-columns:1fr}}
+.pill{background:var(--acs);color:var(--ac);border-radius:99px;padding:.1rem .7rem;font-size:.85rem;font-weight:600;float:right}
+.k{font-size:.78rem;letter-spacing:.1em;color:var(--mut);font-weight:700;text-transform:uppercase}
+.ex{border:1px solid var(--bd);border-radius:10px;padding:.5rem .8rem;margin:.4rem 0;font-family:ui-monospace,Consolas,monospace;font-size:.9rem}
+.editor{display:flex;border:1px solid var(--bd);border-radius:10px;background:var(--card);overflow:auto;max-height:420px}
+.gut{padding:.8rem .6rem;color:var(--mut);text-align:right;user-select:none;border-right:1px solid var(--bd);font:14px/22px ui-monospace,Consolas,monospace;white-space:pre}
+.cw{position:relative;flex:1;min-width:0}
+#hl{position:absolute;inset:.8rem 0 auto 0;pointer-events:none}#hl div{height:22px}#hl .on{background:var(--hl)}
+#code{position:relative;width:100%;border:0;background:transparent;resize:none;padding:.8rem;font:14px/22px ui-monospace,Consolas,monospace;white-space:pre;overflow:hidden;min-height:11rem;display:block}
+#out{border:1px solid var(--bd);border-radius:10px;padding:.8rem;margin-top:.8rem;background:var(--card);font-family:ui-monospace,Consolas,monospace;font-size:.88rem;white-space:pre-wrap}
+.b{display:inline-block;border-radius:6px;padding:.05rem .5rem;font-size:.78rem;font-weight:700}
+.Confirmed{background:var(--okb);color:var(--ok);border:1px solid var(--ok)}.Possible{background:var(--warnb);color:var(--warn);border:1px solid var(--warn)}.Notsure{background:var(--nsb);color:var(--ns);border:1px solid var(--ns)}
+#fab{position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:20;background:var(--ac);color:var(--bg);border:0;border-radius:16px 0 0 16px;padding:.8rem .7rem;cursor:pointer;box-shadow:-3px 3px 14px rgba(0,0,0,.25);display:flex;flex-direction:column;align-items:center;gap:.2rem;font-weight:700;font-size:.8rem}
+#fab .ic{font-size:1.5rem}#fab .dot{position:absolute;top:-.2rem;left:-.2rem;background:#d93025;color:#fff;border-radius:99px;font-size:.7rem;padding:0 .4rem}
+#chat{position:fixed;top:0;right:0;height:100%;width:min(430px,100%);background:var(--card);border-left:1px solid var(--bd);z-index:30;display:flex;flex-direction:column;box-shadow:-6px 0 24px rgba(0,0,0,.25)}
+#chat[hidden]{display:none}
+.ch{display:flex;justify-content:space-between;align-items:center;padding:.8rem 1rem;border-bottom:1px solid var(--bd)}
+.ch h2{margin:0;font-size:1.1rem}.ch small{color:var(--mut)}
+.modes{padding:.6rem 1rem;border-bottom:1px solid var(--bd)}
+#log{flex:1;overflow:auto;padding:.8rem 1rem}
+.m{margin:.8rem 0}.m .who{font-size:.8rem;color:var(--mut);margin-bottom:.2rem}
+.bub{background:var(--nsb);border-radius:12px;padding:.6rem .8rem;white-space:pre-wrap}.m.u .bub{background:var(--acs);margin-left:2rem}
+.why{border:1px dashed var(--ac);border-radius:10px;padding:.5rem .8rem;margin:.4rem 0;font-size:.9rem}.why p{margin:.2rem 0}
+.acts button{background:none;border:0;color:var(--ac);font-weight:600;cursor:pointer;padding:.2rem .4rem;font-size:.85rem}
+.cf{display:flex;gap:.6rem;padding:.8rem 1rem;border-top:1px solid var(--bd)}.cf input{flex:1;border:1px solid var(--bd);border-radius:10px;padding:.5rem .8rem;background:var(--bg)}
+dialog{border:1px solid var(--bd);border-radius:14px;background:var(--card);color:var(--fg);max-width:420px;width:92%}dialog label{display:block;margin:.7rem 0}
+.tl{display:grid;gap:.8rem}.sr{position:absolute;left:-9999px}
+</style></head>
+<body data-view="landing">
+<a class="sr" href="#main">Skip to content</a>
+<header>
+ <button class="logo" id="logo" aria-label="CodeBuddy home"><i aria-hidden="true">&lt;/&gt;</i> CodeBuddy</button>
+ <div id="wkbar" hidden style="display:none;align-items:center;gap:1rem"><span class="k">Problem</span><strong id="ptitle"></strong>
+  <label class="sw"><span>Timer (optional)</span><input type="checkbox" id="tmr" role="switch"> <span id="tval" aria-live="off"></span></label></div>
+ <nav aria-label="Main">
+  <button class="link" data-go="progress">Progress</button>
+  <button class="link" data-go="about">About CodeBuddy</button>
+  <button class="link" id="accbtn">⚙ Accessibility</button>
+  <label class="sw"><span id="thl">Light theme</span><input type="checkbox" id="theme" role="switch" aria-label="Dark theme"></label>
+ </nav>
+</header>
+<main id="main">
+ <section class="view" id="v-landing" aria-labelledby="h-land">
+  <div class="hero"><div class="eyebrow">LEARN WITH CONFIDENCE</div>
+   <h1 id="h-land">CodeBuddy – your <span>problem-solving coach</span></h1>
+   <p class="lead">Build your programming skills with support that stays at your pace.</p></div>
+  <div class="two">
+   <div class="card"><h2>What I can do</h2><p style="color:var(--mut)">Give hints one at a time, review your code, explain concepts, and analyze problems in <b>Python, C++, or Java</b>.</p></div>
+   <div class="card"><h2>What I cannot do</h2><ul><li>I cannot run your code unless Run is enabled. In this demo Run works for Python only.</li><li>My complexity estimates may be uncertain.</li><li>I can make mistakes.</li></ul></div>
+  </div>
+  <p style="text-align:center;color:var(--ac)">Every hint comes with a reason. Tap <b>“Why this?”</b> any time.</p>
+  <p style="text-align:center"><button class="btn" id="start">Start with a recommended problem →</button>
+   <button class="btn sec" id="choose">Choose a problem</button> <button class="btn sec" data-go="about" style="border:0;color:var(--ac)">About CodeBuddy</button></p>
+  <p id="choosebox" hidden style="text-align:center" role="status"></p>
+  <p style="text-align:center;color:var(--mut)">No pressure. You can change your help mode at any time.</p>
+ </section>
+
+ <section class="view" id="v-work" hidden aria-label="Workspace"><div class="work">
+  <div class="card" aria-labelledby="pt"><span class="pill" id="plevel"></span><div class="k">Problem</div>
+   <h2 id="pt" style="font-size:1.6rem;font-weight:500"></h2><p style="color:var(--ac);margin:.2rem 0" id="pwhy"></p><p id="pst"></p><hr style="border-color:var(--bd)">
+   <b>Input / Output</b><p><b>Input:</b> <span id="pin"></span><br><b>Output:</b> <span id="pout"></span></p>
+   <b>Constraints</b><p id="pcon" style="font-family:monospace"></p><b>Examples</b><div id="pex"></div></div>
+  <div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><span class="k">Code editor</span>
+   <label>Language <select id="lang"><option value="python">Python</option><option value="cpp">C++</option><option value="java">Java</option></select></label></div>
+   <p class="k" id="hlmsg" role="status" style="text-transform:none;letter-spacing:0;margin:.3rem 0"></p>
+   <div class="editor"><div class="gut" id="gut" aria-hidden="true"></div><div class="cw"><div id="hl" aria-hidden="true"></div>
+    <textarea id="code" spellcheck="false" aria-label="Code editor" wrap="off"></textarea></div></div>
+   <p><button class="btn" id="run">▶ Run</button> <button class="btn sec" id="ex">Test with examples</button></p>
+   <div id="out" aria-live="polite"><b>Output</b>
+Run your code to see results here.</div></div>
+ </div></section>
+
+ <section class="view" id="v-progress" hidden aria-labelledby="h-pr"><h1 id="h-pr">Your progress</h1>
+  <p style="color:var(--mut)">Progress is guidance from your recorded attempts, not a judgment of ability. Help used is a learning signal, not a score.</p><div class="tl" id="prog"></div></section>
+
+ <section class="view" id="v-about" hidden aria-labelledby="h-ab"><h1 id="h-ab">About CodeBuddy</h1><div class="tl">
+  <div class="card"><h2>What data it uses</h2><p>Your code, your test results, your hint history and your ratings in this session. Only fictional or synthetic data should be entered. Nothing is sent to an AI model in this demo build.</p></div>
+  <div class="card"><h2>What it cannot do</h2><ul><li>Run C++ or Java in this demo build (Python only).</li><li>Verify complexity: it gives an estimate and shows how it got it.</li><li>Give the full solution without asking you first.</li></ul></div>
+  <div class="card"><h2>How to read its answers</h2><p>Every answer has a confidence label shown in words: <span class="b Confirmed">Confirmed</span> (backed by a test or a rule), <span class="b Possible">Possible issue</span>, or <span class="b Notsure">Not sure</span>. Open <b>Why this?</b> to see what it looked at, why, and what it is unsure about. You can say <b>I disagree</b> at any time.</p></div></div></section>
+</main>
+
+<button id="fab" aria-expanded="false" aria-controls="chat"><span class="ic" aria-hidden="true">💬</span><span>CodeBuddy chat</span><span class="dot" id="dot" hidden>New</span></button>
+<aside id="chat" role="complementary" aria-label="CodeBuddy chat" hidden>
+ <div class="ch"><div><h2>● CodeBuddy</h2><small>Your pace, your choice</small></div><button class="btn sec sm" id="close" aria-label="Close chat">✕ Close</button></div>
+ <div class="modes"><div class="k" style="margin-bottom:.2rem">Choose how I help <span style="float:right;text-transform:none;letter-spacing:0;font-weight:400">Change anytime</span></div>
+  <div id="mb" role="group" aria-label="Help modes"></div></div>
+ <div id="log" role="log" aria-live="polite" tabindex="0" aria-label="Conversation"></div>
+ <div id="opts" style="padding:0 1rem"></div>
+ <div class="cf"><label class="sr" for="msg">Ask CodeBuddy</label><input id="msg" placeholder="Ask CodeBuddy..." autocomplete="off"><button class="btn" id="send">Send</button></div>
+</aside>
+
+<dialog id="acc"><h2>Accessibility</h2>
+ <label>Text size <select id="fs"><option value="16">100%</option><option value="20">125%</option><option value="24">150%</option><option value="32">200%</option></select></label>
+ <label><input type="checkbox" id="short"> Short replies (first sentence only; use “Why this?” for more)</label>
+ <label><input type="checkbox" id="hc"> High contrast</label>
+ <p style="color:var(--mut);font-size:.9rem">Keyboard: Tab to move, Enter to press, Esc to close the chat or this window. Status is always written in words.</p>
+ <button class="btn" id="accx">Done</button></dialog>
+
+<script>
+const $=id=>document.getElementById(id);let sid="",greeted=false,lastRun=null,selMode="";
+const TPL={python:"def find_max(numbers):\n    largest = 0\n    for number in numbers:\n        if number > largest: largest = number\n    return largest",
+cpp:"int find_max(vector<int> numbers) {\n    int largest = 0;\n    for (int number : numbers)\n        if (number > largest) largest = number;\n    return largest;\n}",
+java:"public static int findMax(int[] numbers) {\n    int largest = 0;\n    for (int number : numbers)\n        if (number > largest) largest = number;\n    return largest;\n}"};
+const MODES=[["try","Try independently"],["hint","Get a hint"],["analyze","Analyze the problem"],["review","Review my code"],["concept","Explain a concept"],["solution","Show complete solution"]];
+function el(t,c,x){const e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e}
+async function api(p,b){const r=await fetch(p,b?{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(b)}:{});return r.json()}
+/* views */
+function go(v){document.querySelectorAll(".view").forEach(s=>s.hidden=s.id!=="v-"+v);
+ document.querySelectorAll("nav [data-go]").forEach(b=>b.toggleAttribute("aria-current",b.dataset.go===v)||b.removeAttribute("aria-current"));
+ const w=v==="work";$("wkbar").hidden=!w;$("wkbar").style.display=w?"flex":"none";if(location.hash!=="#"+v)history.pushState(null,"","#"+v);
+ if(v==="progress")loadProgress();document.title="CodeBuddy – "+v;$("h-"+({landing:"land",progress:"pr",about:"ab"}[v]||"x"))?.focus?.()}
+addEventListener("popstate",()=>go((location.hash||"#landing").slice(1)||"landing"));
+document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>go(b.dataset.go));
+$("logo").onclick=()=>go("landing");$("start").onclick=()=>{go("work");$("code").focus()};
+$("choose").onclick=()=>{const b=$("choosebox");b.hidden=false;b.textContent="Available now: Maximum of a List (Easy). More problems are planned.";};
+/* theme + accessibility */
+$("theme").onchange=e=>{document.body.parentElement.dataset.theme=e.target.checked?"dark":"light";$("thl").textContent=e.target.checked?"Dark theme":"Light theme"};
+$("accbtn").onclick=()=>$("acc").showModal();$("accx").onclick=()=>$("acc").close();
+$("fs").onchange=e=>document.documentElement.style.setProperty("--fs",e.target.value+"px");
+$("hc").onchange=e=>{document.documentElement.dataset.contrast=e.target.checked?"high":""};
+/* timer */
+let tI,ts=0;$("tmr").onchange=e=>{clearInterval(tI);ts=0;$("tval").textContent="";if(e.target.checked){tI=setInterval(()=>{ts++;$("tval").textContent=String(Math.floor(ts/60)).padStart(2,"0")+":"+String(ts%60).padStart(2,"0")},1000)}};
+/* problem */
+async function loadProblem(){const p=await api("/api/problem");$("ptitle").textContent=$("pt").textContent=p.title;$("plevel").textContent=p.level;$("pwhy").textContent=p.why;$("pst").textContent=p.statement;
+ $("pin").textContent=p.input;$("pout").textContent=p.output;$("pcon").textContent=p.constraints;
+ p.examples.forEach(x=>{const d=el("div","ex");d.textContent="Input: "+JSON.stringify(x.input)+"\nOutput: "+x.output;d.style.whiteSpace="pre";$("pex").appendChild(d)})}
+/* editor */
+function layout(){const c=$("code"),n=c.value.split("\n").length;c.style.height=Math.max(n,10)*22+26+"px";
+ $("gut").textContent=Array.from({length:Math.max(n,10)},(_,i)=>i+1).join("\n")}
+let hlLine=0;function setHl(n){hlLine=n||0;const n2=Math.max($("code").value.split("\n").length,10);$("hl").innerHTML="";
+ for(let i=1;i<=n2;i++){const d=document.createElement("div");if(i===hlLine)d.className="on";$("hl").appendChild(d)}
+ $("hlmsg").textContent=hlLine?"Highlighted: line "+hlLine+" (CodeBuddy's evidence)":""}
+$("code").oninput=()=>{layout();setHl(0)};
+$("lang").onchange=e=>{$("code").value=TPL[e.target.value];layout();setHl(0)};
+/* output */
+function showOut(r){const o=$("out");o.textContent="";o.appendChild(el("b",null,"Output\n"));o.appendChild(el("div",null,r.status));
+ r.results.forEach(x=>o.appendChild(el("div",null,(x.ok?"PASS ":"FAIL ")+"input="+JSON.stringify(x.input)+" expected="+x.expected+" actual="+x.actual)));}
+async function runCode(which){const r=await api("/api/run",{session:sid,code:$("code").value,language:$("lang").value,which});sid=r.session;showOut(r.run);addBot(r.coach,true)}
+$("run").onclick=()=>runCode("all");$("ex").onclick=()=>runCode("examples");
+/* chat */
+function openChat(){$("chat").hidden=false;$("fab").setAttribute("aria-expanded","true");$("fab").style.display="none";$("dot").hidden=true;
+ if(!greeted){greeted=true;api("/api/greeting").then(r=>addBot(r,false))}$("msg").focus()}
+function closeChat(){$("chat").hidden=true;$("fab").setAttribute("aria-expanded","false");$("fab").style.display="flex";$("fab").focus()}
+$("fab").onclick=openChat;$("close").onclick=closeChat;
+addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("chat").hidden&&!$("acc").open)closeChat()});
+const mb=$("mb");MODES.forEach(([k,l])=>{const b=el("button","chip",l);b.setAttribute("aria-pressed","false");b.onclick=()=>{selMode=k;mb.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));send(l,k)};mb.appendChild(b)});
+function addUser(t){const m=el("div","m u");m.appendChild(el("div","who","You"));m.appendChild(el("div","bub",t));$("log").appendChild(m);m.scrollIntoView({block:"end"})}
+function addBot(r,fromRun){const m=el("div","m");m.appendChild(el("div","who","CodeBuddy "));
+ const lab=r.confidence.label,cls=lab==="Possible issue"?"Possible":lab==="Not sure"?"Notsure":"Confirmed";
+ const b=el("span","b "+cls,lab);m.firstChild.appendChild(b);m.firstChild.appendChild(document.createTextNode(" "+r.confidence.why));
+ m.appendChild(el("div","bub",r.message));
+ const why=el("div","why");why.hidden=true;
+ [["What I looked at: ",r.evidence],["Why I said this: ",r.reason],["What I am not sure about: ",lab==="Confirmed"?"Nothing about the evidence above. "+r.confidence.why:r.confidence.why]].forEach(([a,t])=>{const p=el("p");p.appendChild(el("b",null,a));p.appendChild(document.createTextNode(t));why.appendChild(p)});
+ const acts=el("div","acts");const wb=el("button",null,"Why this?");wb.setAttribute("aria-expanded","false");wb.onclick=()=>{why.hidden=!why.hidden;wb.setAttribute("aria-expanded",!why.hidden)};
+ acts.appendChild(wb);
+ if(r.hint_level||r.message.length>40){const sb=el("button",null,"Simpler explanation");sb.onclick=()=>send("Simpler explanation");acts.appendChild(sb)}
+ const db=el("button",null,"I disagree");db.onclick=()=>send("I disagree");acts.appendChild(db);
+ const cb=el("button",null,"Was this explanation clear? Yes");const nb=el("button",null,"No");
+ [[cb,true],[nb,false]].forEach(([x,v])=>x.onclick=()=>{api("/api/feedback",{session:sid,clear:v});cb.remove();nb.remove();acts.appendChild(el("span",null,v?" Thanks, marked clear.":" Thanks, marked not clear."))});acts.append(cb,nb);
+ m.append(why,acts);$("log").appendChild(m);if(r.highlight_line)setHl(r.highlight_line);
+ const o=$("opts");o.textContent="";(r.options||[]).forEach(t=>{const c=el("button","chip",t);c.onclick=()=>t==="Run my code"?runCode("all"):send(t);o.appendChild(c)});
+ m.scrollIntoView({block:"end"});if($("chat").hidden&&fromRun){$("dot").hidden=false;$("fab").setAttribute("aria-label","CodeBuddy chat, new message")}}
+async function send(t,mode){t=(t??$("msg").value).trim();if(!t&&!mode)return;addUser(t);$("msg").value="";
+ const r=await api("/api/chat",{session:sid,message:t,code:$("code").value,language:$("lang").value,mode:mode||"",short:$("short").checked});sid=r.session;
+ if(r.run)showOut(r.run);addBot(r,false)}
+$("send").onclick=()=>send();$("msg").onkeydown=e=>{if(e.key==="Enter")send()};
+/* progress */
+async function loadProgress(){const d=await api("/api/progress?session="+sid);const b=$("prog");b.textContent="";
+ if(d.empty){b.appendChild(el("div","card","No attempts yet. Press Run in the workspace, then come back."));return}
+ d.items.forEach(i=>{const c=el("div","card");c.appendChild(el("h2",null,i.title));c.appendChild(el("p",null,i.value));
+  const dt=el("details");dt.appendChild(el("summary",null,"How did I get this?"));dt.appendChild(el("p",null,i.how));c.appendChild(dt);b.appendChild(c)})}
+/* init */
+$("code").value=TPL.python;layout();setHl(0);loadProblem();
+go((location.hash||"#landing").slice(1)||"landing");
+</script></body></html>
